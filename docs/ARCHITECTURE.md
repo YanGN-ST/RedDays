@@ -11,7 +11,7 @@
 | `scripts/hkholiday.py` | 抓取香港 1823 官方 JSON，落地 data/hk/ | requests |
 | `scripts/hkcal.py` | data/hk/ → 香港公众假期 ICS（简体 + 繁体两版） | 标准库 |
 | `scripts/ethniccal.py` | 民族节日、回历每日、基督教历三个 ICS；回历推算 + 复活节 computus + data/losar.json 洛萨表 | hijridate、lunar_python |
-| `scripts/readme_status.py` | 重写 README「数据维护状态」标记区块（CI 自动运行） | 标准库 |
+| `scripts/readme_status.py` | 重写中英 README「数据维护状态」标记区块（CI 自动运行） | 标准库 |
 | `scripts/crosscheck.py` | 拉苹果官方 cn_zh 日历，比对补班日集合（发布门禁） | 标准库 |
 | `config.py` | 全部展示偏好：命名模板、补班时间、提醒、颜色、描述开关 | 无 |
 | `publish.yml` | 编排整个链路并部署 GitHub Pages | 无 |
@@ -44,7 +44,7 @@ gov.cn 公告 ──Layer1 直连解析──┐
 1. **生成守卫**：sync 前后各生成一次 ICS，数据变了而 ICS 没变 = 生成器坏 → fail
 2. **年度合理性校验**：新年份数据自动上线，无人工放行。校验规则：大陆放/班天数区间（2007-2026 实测 off 22-33、work 5-12）、与上年放假日数偏差 ≤40%、香港每年 12-20 天；任一不过 → sync.py exit 2，本次发布拦截，workflow 失败并开告警 issue。校验盯的是解析错漏（整段丢失、日期错位），拦不住与公告一致性无关的个别日期笔误，极端情形以苹果日历当年交叉校验兜底。小模型自动校验试过并否决：Qwen3-1.7B 对 20 年公告回测仅 3/20，4B 会幻觉补班；规则化校验无此问题
 3. **双源校验**：与苹果官方日历比对当年补班日集合（必须相等）+ 苹果休日 ⊆ 我们休日（苹果只标首日）
-4. **测试**：37 项离线测试（2026 真值断言、确定性输出、UID 稳定、RFC 5545 合规）；1 项网络测试默认跳过（layer1 本身就是真集成测试）
+4. **测试**：61 项离线测试（2026 真值断言、确定性输出、UID 稳定、RFC 5545 合规）；1 项网络测试默认跳过（layer1 本身就是真集成测试）
 
 ## ICS 设计要点
 

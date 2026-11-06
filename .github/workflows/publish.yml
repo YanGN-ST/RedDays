@@ -76,14 +76,14 @@ jobs:
       - name: Run tests
         run: python -m pytest -q
 
-      - name: Refresh README data-status block
+      - name: Refresh bilingual README data-status blocks
         run: python ./scripts/readme_status.py
 
       - name: Commit data changes
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@users.noreply.github.com"
-          git add 'data/[0-9][0-9][0-9][0-9].json' 'data/hk/[0-9][0-9][0-9][0-9].json' README.md
+          git add 'data/[0-9][0-9][0-9][0-9].json' 'data/hk/[0-9][0-9][0-9][0-9].json' README.md README.zh-CN.md
           if git diff --cached --quiet; then
             echo "no data changes to commit"
           else
