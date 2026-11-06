@@ -11,11 +11,18 @@ from icalendar import Calendar
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../scripts"))
 from paths import workspace_path  # noqa: E402
 from generate import (  # noqa: E402
+    INDEX_TEMPLATE,
     build_events,
     iter_runs,
     load_days,
     render_calendar,
 )
+
+
+def test_subscription_page_uses_current_pages_domain():
+    page = INDEX_TEMPLATE.format(title="RedDays", data_status="")
+    assert "webcal://yangn-st.github.io/RedDays/reddays-detailed.ics" in page
+    assert "ygnstudio.github.io/RedDays/" not in page
 
 WORK_2026 = {
     "2026-01-04",
@@ -208,6 +215,7 @@ def test_detailed_off_description_context(data):
 
 def test_detailed_last_workday_has_no_next(data):
     days, papers = data
+    days = [day for day in days if day["date"] < "2027-01-01"]
     for block in build_events(days, papers, "detailed"):
         text = "\n".join(block).replace("\r\n ", "")
         if "20261010-work-" in text:
@@ -232,6 +240,7 @@ def test_cross_year_references_carry_year(data):
 def test_last_run_without_next_shows_pending(data):
     """数据尽头（2027 未发布）的假期应明确写「待国务院公布」。"""
     days, papers = data
+    days = [day for day in days if day["date"] < "2027-01-01"]
     found = False
     for block in build_events(days, papers, "detailed"):
         text = "\n".join(block).replace("\r\n ", "")
@@ -239,6 +248,18 @@ def test_last_run_without_next_shows_pending(data):
             found = True
             assert "下一个假期：待国务院公布" in text
     assert found, "off event 20261001 not found"
+
+
+def test_future_year_is_included_in_next_holiday(data):
+    days, papers = data
+    days = [day for day in days if day["date"] < "2027-01-01"]
+    days.append({"date": "2027-01-01", "name": "元旦", "isOffDay": True})
+    for block in build_events(days, papers, "detailed"):
+        text = "\n".join(block).replace("\r\n ", "")
+        if "20261001-off-" in text:
+            assert "下一个假期：元旦（2027年1月1日" in text
+            return
+    pytest.fail("off event 20261001 not found")
 
 
 def test_crosscheck_internal_consistency():
