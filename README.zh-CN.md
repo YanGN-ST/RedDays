@@ -74,7 +74,7 @@
 ## 数据维护状态
 
 <!-- data-status:start -->
-截至 2026-11-09（由 `scripts/readme_status.py` 生成）：
+截至 2026-11-10（由 `scripts/readme_status.py` 生成）：
 
 - **最近维护**：2026-11-09。GitHub Actions 每日检查官方来源，并滚动推进日历窗口。
 - **数据范围**：
